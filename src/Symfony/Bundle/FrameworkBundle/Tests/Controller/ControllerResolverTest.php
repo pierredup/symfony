@@ -113,9 +113,7 @@ class ControllerResolverTest extends BaseControllerResolverTest
      */
     public function testGetControllerOnNonUndefinedFunction($controller, $exceptionName = null, $exceptionMessage = null)
     {
-        $this->setExpectedException($exceptionName, $exceptionMessage);
-
-        parent::testGetControllerOnNonUndefinedFunction($controller);
+        parent::testGetControllerOnNonUndefinedFunction($controller, $exceptionName, $exceptionMessage);
     }
 
     public function getUndefinedControllers()
@@ -125,9 +123,9 @@ class ControllerResolverTest extends BaseControllerResolverTest
             array('foo::bar', '\InvalidArgumentException', 'Class "foo" does not exist.'),
             array('stdClass', '\LogicException', 'Unable to parse the controller name "stdClass".'),
             array(
-                'Symfony\Component\HttpKernel\Tests\Controller\ControllerResolverTest::bar',
+                'Symfony\Component\HttpKernel\Tests\Controller\ControllerTest::bar',
                 '\InvalidArgumentException',
-                'Controller "Symfony\Component\HttpKernel\Tests\Controller\ControllerResolverTest::bar" for URI "/" is not callable.',
+                'The controller for URI "/" is not callable. Expected method "bar" on class "Symfony\Component\HttpKernel\Tests\Controller\ControllerTest". Available methods: "publicAction", "staticAction"',
             ),
         );
     }
