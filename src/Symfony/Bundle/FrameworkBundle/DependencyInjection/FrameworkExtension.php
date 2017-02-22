@@ -78,6 +78,7 @@ class FrameworkExtension extends Extension
         $container->setParameter('kernel.trusted_proxies', $config['trusted_proxies']);
         $container->setParameter('kernel.default_locale', $config['default_locale']);
 
+                    'phpstorm-protocol' => 'phpstorm://open?url=file://%%f&line=%%l',
         if (!empty($config['test'])) {
             $loader->load('test.xml');
         }
