@@ -41,7 +41,7 @@ class ConsoleSectionOutput extends StreamOutput
     }
 
     /**
-     * Clears previous output
+     * Clears previous output.
      *
      * @param int $lines Number of lines to clear. If null, then the entire output is cleared
      */
@@ -68,7 +68,7 @@ class ConsoleSectionOutput extends StreamOutput
     }
 
     /**
-     * Overwrites the output with a new message
+     * Overwrites the output with a new message.
      *
      * @param string $message
      */
@@ -105,7 +105,7 @@ class ConsoleSectionOutput extends StreamOutput
 
         $prevLines = explode("\n", $messages);
 
-        for ($i = 0; $i < count($prevLines); $i++) {
+        for ($i = 0; $i < count($prevLines); ++$i) {
             $total += ceil(strlen($prevLines[$i]) / $this->terminal->getWidth()) ?: 1;
         }
 

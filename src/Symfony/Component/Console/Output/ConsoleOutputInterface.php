@@ -28,7 +28,7 @@ interface ConsoleOutputInterface extends OutputInterface
 
     public function setErrorOutput(OutputInterface $error);
 
-    /**
+    /*
      * Creates a new output section
      *
      * @return ConsoleSectionOutput
