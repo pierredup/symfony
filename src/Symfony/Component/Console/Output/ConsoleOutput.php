@@ -58,7 +58,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     }
 
     /**
-     * Creates a new output section
+     * Creates a new output section.
      *
      * @return ConsoleSectionOutput
      */

@@ -13,6 +13,7 @@ namespace Symfony\Component\Console\Output;
 
 /**
  * @internal
+ *
  * @author Pierre du Plessis <pdples@gmail.com>
  */
 final class OutputSectionReference
