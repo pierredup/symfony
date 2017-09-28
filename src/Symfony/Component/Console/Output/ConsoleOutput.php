@@ -31,6 +31,8 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
 {
     private $stderr;
 
+    private $outputReference;
+
     /**
      * @param int                           $verbosity The verbosity level (one of the VERBOSITY constants in OutputInterface)
      * @param bool|null                     $decorated Whether to decorate messages (null for auto-guessing)
@@ -46,6 +48,18 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
         if (null === $decorated) {
             $this->setDecorated($actualDecorated && $this->stderr->isDecorated());
         }
+
+        $this->outputReference = new OutputSectionReference();
+    }
+
+    /**
+     * Creates a new output section
+     *
+     * @return ConsoleSectionOutput
+     */
+    public function section()
+    {
+        return new ConsoleSectionOutput($this->getStream(), $this->outputReference, $this->getVerbosity(), $this->isDecorated(), $this->getFormatter());
     }
 
     /**
