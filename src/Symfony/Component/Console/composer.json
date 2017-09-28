@@ -18,7 +18,8 @@
     "require": {
         "php": "^5.5.9|>=7.0.8",
         "symfony/polyfill-mbstring": "~1.0",
-        "symfony/debug": "~2.8|~3.0|~4.0"
+        "symfony/debug": "~2.8|~3.0|~4.0",
+        "symfony/polyfill-php72": "~1.5"
     },
     "require-dev": {
         "symfony/config": "~3.3|~4.0",

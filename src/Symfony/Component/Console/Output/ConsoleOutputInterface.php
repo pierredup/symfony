@@ -13,7 +13,7 @@ namespace Symfony\Component\Console\Output;
 
 /**
  * ConsoleOutputInterface is the interface implemented by ConsoleOutput class.
- * This adds information about stderr output stream.
+ * This adds information about stderr and section output stream.
  *
  * @author Dariusz Górecki <darek.krk@gmail.com>
  */
@@ -32,4 +32,11 @@ interface ConsoleOutputInterface extends OutputInterface
      * @param OutputInterface $error
      */
     public function setErrorOutput(OutputInterface $error);
+
+    /**
+     * Creates a new output section
+     *
+     * @return ConsoleSectionOutput
+     */
+    // public function section(); // TODO Add this method to the interface in Symfony 4
 }
