@@ -48,7 +48,7 @@ class ConsoleSectionOutput extends StreamOutput
      */
     public function clear($lines = null)
     {
-        if (empty($this->content)) {
+        if (empty($this->content) || !$this->isDecorated()) {
             return;
         }
 
@@ -85,6 +85,10 @@ class ConsoleSectionOutput extends StreamOutput
      */
     protected function doWrite($message, $newline)
     {
+        if (!$this->isDecorated()) {
+            return parent::doWrite($message, $newline);
+        }
+
         $newline = true;
         $buffer = $this->sectionReference->calculateBuffer($this);
 
