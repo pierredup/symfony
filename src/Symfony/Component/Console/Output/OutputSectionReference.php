@@ -42,16 +42,16 @@ final class OutputSectionReference
 
     public function getOutput(ConsoleSectionOutput $output)
     {
-        $content = '';
+        $content = array();
 
         foreach ($this->ref as $outputStream) {
             if ($outputStream === $output) {
                 break;
             }
 
-            $content .= $outputStream->content;
+            $content[] = $outputStream->content;
         }
 
-        return $content;
+        return implode('', array_reverse($content));
     }
 }
