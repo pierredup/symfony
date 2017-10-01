@@ -75,7 +75,7 @@ class ConsoleSectionOutput extends StreamOutput
     public function overwrite($message)
     {
         $this->clear();
-        $this->doWrite($this->getFormatter()->format($message), true);
+        $this->writeln($message, true);
     }
 
     /**
