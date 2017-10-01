@@ -473,7 +473,7 @@ final class ProgressBar
         if ($this->overwrite) {
             if (!$this->firstRun) {
                 if ($this->output instanceof ConsoleSectionOutput) {
-                    $this->output->clear(1);
+                    $this->output->clear($this->formatLineCount + 1);
                 } else {
                     // Move the cursor to the beginning of the line
                     $this->output->write("\x0D");

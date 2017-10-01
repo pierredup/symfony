@@ -34,7 +34,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      */
     private $stderr;
 
-    private $outputReference;
+    private $consoleSectionOutputs = [];
 
     /**
      * Constructor.
@@ -53,8 +53,6 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
         if (null === $decorated) {
             $this->setDecorated($actualDecorated && $this->stderr->isDecorated());
         }
-
-        $this->outputReference = new OutputSectionReference();
     }
 
     /**
@@ -64,7 +62,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      */
     public function section()
     {
-        return new ConsoleSectionOutput($this->getStream(), $this->outputReference, $this->getVerbosity(), $this->isDecorated(), $this->getFormatter());
+        return new ConsoleSectionOutput($this->getStream(), $this->consoleSectionOutputs, $this->getVerbosity(), $this->isDecorated(), $this->getFormatter());
     }
 
     /**

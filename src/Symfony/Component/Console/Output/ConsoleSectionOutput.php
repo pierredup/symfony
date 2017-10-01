@@ -17,20 +17,21 @@ use Symfony\Component\Console\Terminal;
 
 /**
  * @author Pierre du Plessis <pdples@gmail.com>
+ * @author Gabriel Ostrolucký <gabriel.ostrolucky@gmail.com>
  */
 class ConsoleSectionOutput extends StreamOutput
 {
-    public $content;
+    public $content = '';
     public $lines = 0;
 
-    private $sectionReference;
+    private $sections;
     private $terminal;
 
-    public function __construct($stream, OutputSectionReference $sectionReference, $verbosity, $decorated, OutputFormatterInterface $formatter)
+    public function __construct($stream, array &$sections, $verbosity, $decorated, OutputFormatterInterface $formatter)
     {
         parent::__construct($stream, $verbosity, $decorated, $formatter);
-        $this->sectionReference = $sectionReference;
-        $this->sectionReference->addRef($this);
+        array_unshift($sections, $this);
+        $this->sections = &$sections;
         $this->terminal = new Terminal();
     }
 
@@ -45,20 +46,14 @@ class ConsoleSectionOutput extends StreamOutput
             return;
         }
 
-        $number = $lines ?: $this->lines;
-
-        $buffer = $this->sectionReference->calculateBuffer($this);
-        $buffer += $number;
-
-        $this->content = '';
-        $this->lines = $this->lines - $number;
-
-        if ($buffer > 0) {
-            $this->moveUp($buffer);
-            $this->clearOutput();
+        if (!$lines) {
+            $lines = $this->lines;
         }
 
-        $this->printOutput();
+        $this->content = '';
+        $this->lines -= $lines;
+
+        parent::doWrite($this->popStreamContentUntilCurrentSection($lines), false);
     }
 
     /**
@@ -81,57 +76,46 @@ class ConsoleSectionOutput extends StreamOutput
             return parent::doWrite($message, $newline);
         }
 
-        $newline = true;
-        $buffer = $this->sectionReference->calculateBuffer($this);
+        $erasedContent = $this->popStreamContentUntilCurrentSection();
 
-        if ($buffer > 0) {
-            $this->moveUp($buffer);
-            $this->clearOutput();
+        foreach (explode(PHP_EOL, $message) as $lineContent) {
+            $lineLength = Helper::strlenWithoutDecoration($this->getFormatter(), $lineContent);
+            // calculates to how many lines does the line wrap to
+            $this->lines += $lineLength ? ceil($lineLength / $this->terminal->getWidth()) : 1;
         }
 
-        $this->calculateLines($message, $newline);
+        $this->content .= $message.PHP_EOL;
 
-        parent::doWrite($message, $newline);
-
-        $this->printOutput();
+        parent::doWrite($message, true);
+        parent::doWrite($erasedContent, false);
     }
 
-    private function calculateLines($messages, $newLine)
+    /**
+     * At initial stage, cursor is at the end of stream output. This method makes cursor crawl upwards until it hits
+     * current section. Then it erases content it crawled through. Optionally, it erases part of current section too.
+     *
+     * @param int $numberOfLinesToClearFromCurrentSection
+     * @return string
+     */
+    private function popStreamContentUntilCurrentSection($numberOfLinesToClearFromCurrentSection = 0)
     {
-        $total = 0;
+        $numberOfLinesToClear = $numberOfLinesToClearFromCurrentSection;
+        $erasedContent = [];
 
-        $prevLines = explode("\n", $messages);
+        foreach ($this->sections as $section) {
+            if ($section === $this) {
+                break;
+            }
 
-        for ($i = 0; $i < count($prevLines); ++$i) {
-            $total += ceil(Helper::strlen($prevLines[$i]) / $this->terminal->getWidth()) ?: 1;
+            $numberOfLinesToClear += $section->lines;
+            $erasedContent[] = $section->content;
         }
 
-        $this->lines += $total;
-        $this->content .= $messages;
-
-        if ($newLine) {
-            $this->content .= "\n";
+        if ($numberOfLinesToClear > 0) {
+            // Move cursor up n lines and erase to end of screen
+            parent::doWrite(sprintf("\033[%dA\033[0J", $numberOfLinesToClear), false);
         }
 
-        return $total;
-    }
-
-    private function moveUp($n)
-    {
-        parent::doWrite(sprintf("\033[%dA", $n), false);
-    }
-
-    private function clearOutput()
-    {
-        parent::doWrite("\033[0J", false);
-    }
-
-    private function printOutput()
-    {
-        $output = $this->sectionReference->getOutput($this);
-
-        if (!empty($output)) {
-            parent::doWrite($output, false);
-        }
+        return implode('', array_reverse($erasedContent));
     }
 }
