@@ -12,6 +12,7 @@
 namespace Symfony\Component\Console\Output;
 
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
+use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Terminal;
 
 /**
@@ -106,7 +107,7 @@ class ConsoleSectionOutput extends StreamOutput
         $prevLines = explode("\n", $messages);
 
         for ($i = 0; $i < count($prevLines); ++$i) {
-            $total += ceil(strlen($prevLines[$i]) / $this->terminal->getWidth()) ?: 1;
+            $total += ceil(Helper::strlen($prevLines[$i]) / $this->terminal->getWidth()) ?: 1;
         }
 
         $this->lines += $total;
