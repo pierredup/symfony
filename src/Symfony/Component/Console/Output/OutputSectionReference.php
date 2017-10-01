@@ -30,7 +30,7 @@ final class OutputSectionReference
         $buffer = 0;
 
         foreach ($this->ref as $outputStream) {
-            if (spl_object_id($outputStream) === spl_object_id($output)) {
+            if ($outputStream === $output) {
                 break;
             }
 
@@ -45,7 +45,7 @@ final class OutputSectionReference
         $content = '';
 
         foreach ($this->ref as $outputStream) {
-            if (spl_object_id($outputStream) === spl_object_id($output)) {
+            if ($outputStream === $output) {
                 break;
             }
 
