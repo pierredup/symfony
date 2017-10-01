@@ -375,7 +375,6 @@ final class ProgressBar
     private function overwrite(string $message): void
     {
         if ($this->overwrite) {
-
             if (!$this->firstRun) {
                 if ($this->output instanceof ConsoleSectionOutput) {
                     $this->output->clear(1);
