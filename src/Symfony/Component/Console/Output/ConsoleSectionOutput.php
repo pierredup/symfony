@@ -26,13 +26,6 @@ class ConsoleSectionOutput extends StreamOutput
     private $sectionReference;
     private $terminal;
 
-    /**
-     * @param resource                 $stream
-     * @param OutputSectionReference   $sectionReference
-     * @param int                      $verbosity
-     * @param null                     $decorated
-     * @param OutputFormatterInterface $formatter
-     */
     public function __construct($stream, OutputSectionReference $sectionReference, $verbosity, $decorated, OutputFormatterInterface $formatter)
     {
         parent::__construct($stream, $verbosity, $decorated, $formatter);
@@ -42,9 +35,9 @@ class ConsoleSectionOutput extends StreamOutput
     }
 
     /**
-     * Clears previous output.
+     * Clears previous output for this section.
      *
-     * @param int $lines Number of lines to clear. If null, then the entire output is cleared
+     * @param int $lines Number of lines to clear. If null, then the entire output of this section is cleared
      */
     public function clear($lines = null)
     {
@@ -69,7 +62,7 @@ class ConsoleSectionOutput extends StreamOutput
     }
 
     /**
-     * Overwrites the output with a new message.
+     * Overwrites the previous output with a new message.
      *
      * @param string $message
      */
@@ -80,8 +73,7 @@ class ConsoleSectionOutput extends StreamOutput
     }
 
     /**
-     * @param string $message
-     * @param bool   $newline
+     * {@inheritdoc}
      */
     protected function doWrite($message, $newline)
     {
