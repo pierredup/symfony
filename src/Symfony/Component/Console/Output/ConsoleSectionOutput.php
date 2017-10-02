@@ -79,7 +79,7 @@ class ConsoleSectionOutput extends StreamOutput
         $erasedContent = $this->popStreamContentUntilCurrentSection();
 
         foreach (explode(PHP_EOL, $message) as $lineContent) {
-            $this->lines += ceil(Helper::strlenWithoutDecoration($this->getFormatter(), $lineContent) / $this->terminal->getWidth()) ?: 1;
+            $this->lines += ceil($this->getDisplayLength($lineContent) / $this->terminal->getWidth()) ?: 1;
         }
 
         $this->content .= $message.PHP_EOL;
@@ -119,9 +119,6 @@ class ConsoleSectionOutput extends StreamOutput
 
     private function getDisplayLength($text)
     {
-        $text = preg_replace('#\\x1b[[][^A-Za-z]*[A-Za-z]#', '', $text);
-        $text = str_replace("\t", '        ', $text);
-
-        return Helper::strlen($text);
+        return Helper::strlenWithoutDecoration($this->getFormatter(), str_replace("\t", '        ', $text));
     }
 }
