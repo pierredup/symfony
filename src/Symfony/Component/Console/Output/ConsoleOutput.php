@@ -31,7 +31,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
 {
     private $stderr;
 
-    private $consoleSectionOutputs = [];
+    private $consoleSectionOutputs = array();
 
     /**
      * @param int                           $verbosity The verbosity level (one of the VERBOSITY constants in OutputInterface)

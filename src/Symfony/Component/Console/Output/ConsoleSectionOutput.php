@@ -93,12 +93,13 @@ class ConsoleSectionOutput extends StreamOutput
      * current section. Then it erases content it crawled through. Optionally, it erases part of current section too.
      *
      * @param int $numberOfLinesToClearFromCurrentSection
+     *
      * @return string
      */
     private function popStreamContentUntilCurrentSection($numberOfLinesToClearFromCurrentSection = 0)
     {
         $numberOfLinesToClear = $numberOfLinesToClearFromCurrentSection;
-        $erasedContent = [];
+        $erasedContent = array();
 
         foreach ($this->sections as $section) {
             if ($section === $this) {
