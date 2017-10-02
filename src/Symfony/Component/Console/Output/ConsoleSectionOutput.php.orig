@@ -79,7 +79,16 @@ class ConsoleSectionOutput extends StreamOutput
         $erasedContent = $this->popStreamContentUntilCurrentSection();
 
         foreach (explode(PHP_EOL, $message) as $lineContent) {
-            $this->lines += ceil(Helper::strlenWithoutDecoration($this->getFormatter(), $lineContent) / $this->terminal->getWidth()) ?: 1;
+<<<<<<< Updated upstream
+            $lineLength = Helper::strlenWithoutDecoration($this->getFormatter(), $lineContent);
+            // calculates to how many lines does the line wrap to
+            $this->lines += $lineLength ? ceil($lineLength / $this->terminal->getWidth()) : 1;
+||||||| merged common ancestors
+            $this->lines += ceil(Helper::strlen($lineContent) / $this->terminal->getWidth()) ?: 1;
+=======
+            //var_dump($lineContent);
+            $this->lines += ceil(Helper::strlen($lineContent) / $this->terminal->getWidth()) ?: 1;
+>>>>>>> Stashed changes
         }
 
         $this->content .= $message.PHP_EOL;
