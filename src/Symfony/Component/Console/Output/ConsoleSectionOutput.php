@@ -23,6 +23,7 @@ class ConsoleSectionOutput extends StreamOutput
 {
     private $content = '';
     private $lines = 0;
+    private $column = 1;
 
     private $sections;
     private $terminal;
@@ -78,6 +79,11 @@ class ConsoleSectionOutput extends StreamOutput
 
         $erasedContent = $this->popStreamContentUntilCurrentSection();
 
+        /*if (0 === $this->lines && empty($erasedContent) && $this->getCursorPosition() > 1) {
+            parent::doWrite('', true);
+            $this->content = PHP_EOL.$this->content;
+        }*/
+
         foreach (explode(PHP_EOL, $message) as $lineContent) {
             $this->lines += ceil($this->getDisplayLength($lineContent) / $this->terminal->getWidth()) ?: 1;
         }
@@ -85,6 +91,7 @@ class ConsoleSectionOutput extends StreamOutput
         $this->content .= $message.PHP_EOL;
 
         parent::doWrite($message, true);
+        $this->column = $this->getCursorPosition();
         parent::doWrite($erasedContent, false);
     }
 
@@ -111,11 +118,32 @@ class ConsoleSectionOutput extends StreamOutput
         }
 
         if ($numberOfLinesToClear > 0) {
-            // Move cursor up n lines and erase to end of screen
-            parent::doWrite(sprintf("\033[%dA\033[0J", $numberOfLinesToClear), false);
+            // Move cursor up n lines
+            //sleep(2);
+            parent::doWrite(sprintf("\033[%dA", $numberOfLinesToClear), false);
+            //sleep(2);
+            // erase to end of screen
+            parent::doWrite("\033[0J", false);
+            //sleep(2);
         }
 
         return implode('', array_reverse($erasedContent));
+    }
+
+    private function getCursorPosition()
+    {
+        $sttyMode = shell_exec('stty -g');
+        shell_exec('stty -icanon -echo');
+
+        parent::doWrite("\033[6n", false);
+
+        $code = trim(fread(STDIN, 100));
+
+        shell_exec(sprintf('stty %s', $sttyMode));
+
+        sscanf($code, "\033[%d;%dR", $row, $col);
+
+        return $col;
     }
 
     private function getDisplayLength($text)
