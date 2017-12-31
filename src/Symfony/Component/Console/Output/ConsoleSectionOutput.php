@@ -41,7 +41,7 @@ class ConsoleSectionOutput extends StreamOutput
      *
      * @param int $lines Number of lines to clear. If null, then the entire output of this section is cleared
      */
-    public function clear($lines = null)
+    public function clear(int $lines = null)
     {
         if (empty($this->content) || !$this->isDecorated()) {
             return;
@@ -103,7 +103,7 @@ class ConsoleSectionOutput extends StreamOutput
      *
      * @return string
      */
-    private function popStreamContentUntilCurrentSection($numberOfLinesToClearFromCurrentSection = 0)
+    private function popStreamContentUntilCurrentSection(int $numberOfLinesToClearFromCurrentSection = 0): string
     {
         $numberOfLinesToClear = $numberOfLinesToClearFromCurrentSection;
         $erasedContent = array();
@@ -130,7 +130,7 @@ class ConsoleSectionOutput extends StreamOutput
         return implode('', array_reverse($erasedContent));
     }
 
-    private function getCursorPosition()
+    private function getCursorPosition(): string
     {
         $sttyMode = shell_exec('stty -g');
         shell_exec('stty -icanon -echo');
@@ -146,7 +146,7 @@ class ConsoleSectionOutput extends StreamOutput
         return $col;
     }
 
-    private function getDisplayLength($text)
+    private function getDisplayLength($text): string
     {
         return Helper::strlenWithoutDecoration($this->getFormatter(), str_replace("\t", '        ', $text));
     }

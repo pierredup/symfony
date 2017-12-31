@@ -55,7 +55,7 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
      *
      * @return ConsoleSectionOutput
      */
-    public function section()
+    public function section(): ConsoleSectionOutput
     {
         return new ConsoleSectionOutput($this->getStream(), $this->consoleSectionOutputs, $this->getVerbosity(), $this->isDecorated(), $this->getFormatter());
     }
