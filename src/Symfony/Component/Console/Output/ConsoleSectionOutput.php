@@ -119,12 +119,9 @@ class ConsoleSectionOutput extends StreamOutput
 
         if ($numberOfLinesToClear > 0) {
             // Move cursor up n lines
-            //sleep(2);
             parent::doWrite(sprintf("\033[%dA", $numberOfLinesToClear), false);
-            //sleep(2);
             // erase to end of screen
             parent::doWrite("\033[0J", false);
-            //sleep(2);
         }
 
         return implode('', array_reverse($erasedContent));
