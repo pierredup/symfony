@@ -87,7 +87,6 @@ class ConsoleSectionOutput extends StreamOutput
         $this->content .= $message.PHP_EOL;
 
         parent::doWrite($message, true);
-        //$this->column = $this->getCursorPosition();
         parent::doWrite($erasedContent, false);
     }
 
