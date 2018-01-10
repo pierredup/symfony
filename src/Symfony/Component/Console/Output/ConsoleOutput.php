@@ -31,6 +31,9 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
 {
     private $stderr;
 
+    /**
+     * @var ConsoleSectionOutput[]
+     */
     private $consoleSectionOutputs = array();
 
     /**
