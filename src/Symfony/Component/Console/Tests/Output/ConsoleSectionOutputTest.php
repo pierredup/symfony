@@ -76,7 +76,7 @@ class ConsoleSectionOutputTest extends TestCase
         $output->overwrite('Bar');
 
         rewind($output->getStream());
-        $this->assertEquals("Foo\nBar\nBaz\n".sprintf("\x1b[%dA", 3)."\x1b[0J"."Bar".PHP_EOL, stream_get_contents($output->getStream()));
+        $this->assertEquals("Foo\nBar\nBaz\n".sprintf("\x1b[%dA", 3)."\x1b[0J".'Bar'.PHP_EOL, stream_get_contents($output->getStream()));
     }
 
     public function testAddingMultipleSections()
