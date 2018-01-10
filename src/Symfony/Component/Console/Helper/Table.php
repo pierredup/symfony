@@ -277,7 +277,7 @@ class Table
     public function render()
     {
         if ($this->output instanceof ConsoleSectionOutput) {
-            $this->output->clear($this->calculateRowCount($this->rows) + $this->calculateRowCount($this->headers) + 1);
+            $this->output->clear($this->calculateRowCount());
         }
 
         $this->calculateNumberOfColumns();
@@ -445,15 +445,16 @@ class Table
         return $tableRows;
     }
 
-    private function calculateRowCount($rows): int
+    private function calculateRowCount(): int
     {
-        $numberOfRows = 0;
-        for ($i = 0, $count = count($rows); $i < $count; ++$i) {
-            foreach ($rows[$i] as $column => $cell) {
-                $lines = explode("\n", str_replace("\n", "<fg=default;bg=default>\n</>", $cell));
-                $numberOfRows += count($lines);
-            }
+        $numberOfRows = count($this->rows);
+
+        if (!empty($this->headers)) {
+            ++$numberOfRows; // Add row for header separator
+            $numberOfRows += count($this->headers);
         }
+
+        ++$numberOfRows; // Add row for separator
 
         return $numberOfRows;
     }
