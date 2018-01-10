@@ -277,8 +277,7 @@ class Table
     public function render()
     {
         if ($this->output instanceof ConsoleSectionOutput) {
-            // TODO: Calculate the number of lines to remove for the table
-            $this->output->clear(count($this->rows) + count($this->headers) + 1);
+            $this->output->clear($this->calculateRowCount($this->rows) + $this->calculateRowCount($this->headers) + 1);
         }
 
         $this->calculateNumberOfColumns();
@@ -444,6 +443,19 @@ class Table
         }
 
         return $tableRows;
+    }
+
+    private function calculateRowCount($rows): int
+    {
+        $numberOfRows = 0;
+        for ($i = 0, $count = count($rows); $i < $count; ++$i) {
+            foreach ($rows[$i] as $column => $cell) {
+                $lines = explode("\n", str_replace("\n", "<fg=default;bg=default>\n</>", $cell));
+                $numberOfRows += count($lines);
+            }
+        }
+
+        return $numberOfRows;
     }
 
     /**
