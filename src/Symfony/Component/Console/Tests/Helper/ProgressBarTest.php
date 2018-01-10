@@ -12,8 +12,10 @@
 namespace Symfony\Component\Console\Tests\Helper;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\StreamOutput;
 
 /**
@@ -306,6 +308,28 @@ class ProgressBarTest extends TestCase
             $this->generateOutput('  0/50 [>---------------------------]   0%').
             $this->generateOutput('  1/50 [>---------------------------]   2%').
             $this->generateOutput('  2/50 [=>--------------------------]'),
+            stream_get_contents($output->getStream())
+        );
+    }
+
+    public function testOverwriteWithSectionOutput()
+    {
+        $sections = array();
+        $stream = $this->getOutputStream(true);
+        $output = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
+
+        $bar = new ProgressBar($output, 50);
+        $bar->start();
+        $bar->display();
+        $bar->advance();
+        $bar->advance();
+
+        rewind($output->getStream());
+        $this->assertEquals(
+            '  0/50 [>---------------------------]   0%'.
+            "\n\x1b[1A\x1b[0J".'  0/50 [>---------------------------]   0%'.
+            "\n\x1b[1A\x1b[0J".'  1/50 [>---------------------------]   2%'.
+            "\n\x1b[1A\x1b[0J".'  2/50 [=>--------------------------]   4%'.PHP_EOL,
             stream_get_contents($output->getStream())
         );
     }

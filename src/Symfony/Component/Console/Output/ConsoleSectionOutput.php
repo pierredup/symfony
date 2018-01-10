@@ -22,10 +22,13 @@ use Symfony\Component\Console\Terminal;
 class ConsoleSectionOutput extends StreamOutput
 {
     private $content = '';
+
     private $lines = 0;
-    private $column = 1;
+
+    //private $column = 1;
 
     private $sections;
+
     private $terminal;
 
     public function __construct($stream, array &$sections, $verbosity, $decorated, OutputFormatterInterface $formatter)
@@ -91,7 +94,7 @@ class ConsoleSectionOutput extends StreamOutput
         $this->content .= $message.PHP_EOL;
 
         parent::doWrite($message, true);
-        $this->column = $this->getCursorPosition();
+        //$this->column = $this->getCursorPosition();
         parent::doWrite($erasedContent, false);
     }
 
@@ -119,9 +122,9 @@ class ConsoleSectionOutput extends StreamOutput
 
         if ($numberOfLinesToClear > 0) {
             // Move cursor up n lines
-            parent::doWrite(sprintf("\033[%dA", $numberOfLinesToClear), false);
+            parent::doWrite(sprintf("\x1b[%dA", $numberOfLinesToClear), false);
             // erase to end of screen
-            parent::doWrite("\033[0J", false);
+            parent::doWrite("\x1b[0J", false);
         }
 
         return implode('', array_reverse($erasedContent));
