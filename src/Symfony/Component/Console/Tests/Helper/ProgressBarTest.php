@@ -314,9 +314,8 @@ class ProgressBarTest extends TestCase
 
     public function testOverwriteWithSectionOutput()
     {
-        $sections = array();
         $stream = $this->getOutputStream(true);
-        $output = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
+        $output = new ConsoleSectionOutput($stream->getStream(), $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
 
         $bar = new ProgressBar($output, 50);
         $bar->start();
