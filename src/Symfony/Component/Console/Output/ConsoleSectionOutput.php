@@ -25,8 +25,6 @@ class ConsoleSectionOutput extends StreamOutput
 
     private $lines = 0;
 
-    //private $column = 1;
-
     private $sections;
 
     private $terminal;
@@ -82,11 +80,6 @@ class ConsoleSectionOutput extends StreamOutput
 
         $erasedContent = $this->popStreamContentUntilCurrentSection();
 
-        /*if (0 === $this->lines && empty($erasedContent) && $this->getCursorPosition() > 1) {
-            parent::doWrite('', true);
-            $this->content = PHP_EOL.$this->content;
-        }*/
-
         foreach (explode(PHP_EOL, $message) as $lineContent) {
             $this->lines += ceil($this->getDisplayLength($lineContent) / $this->terminal->getWidth()) ?: 1;
         }
@@ -128,22 +121,6 @@ class ConsoleSectionOutput extends StreamOutput
         }
 
         return implode('', array_reverse($erasedContent));
-    }
-
-    private function getCursorPosition(): string
-    {
-        $sttyMode = shell_exec('stty -g');
-        shell_exec('stty -icanon -echo');
-
-        parent::doWrite("\033[6n", false);
-
-        $code = trim(fread(STDIN, 100));
-
-        shell_exec(sprintf('stty %s', $sttyMode));
-
-        sscanf($code, "\033[%d;%dR", $row, $col);
-
-        return $col;
     }
 
     private function getDisplayLength($text): string
