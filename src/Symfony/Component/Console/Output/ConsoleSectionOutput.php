@@ -29,7 +29,14 @@ class ConsoleSectionOutput extends StreamOutput
 
     private $terminal;
 
-    public function __construct($stream, array &$sections, $verbosity, $decorated, OutputFormatterInterface $formatter)
+    /**
+     * @param resource                 $stream
+     * @param ConsoleSectionOutput[]   $sections
+     * @param int                      $verbosity
+     * @param bool                     $decorated
+     * @param OutputFormatterInterface $formatter
+     */
+    public function __construct($stream, array &$sections, int $verbosity, bool $decorated, OutputFormatterInterface $formatter)
     {
         parent::__construct($stream, $verbosity, $decorated, $formatter);
         array_unshift($sections, $this);
