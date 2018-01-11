@@ -35,11 +35,11 @@ class ConsoleSectionOutputTest extends TestCase
     {
         $output = new ConsoleSectionOutput($this->stream, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
 
-        $output->writeln("Foo\nBar");
+        $output->writeln('Foo'.PHP_EOL.'Bar');
         $output->clear();
 
         rewind($output->getStream());
-        $this->assertEquals("Foo\nBar".PHP_EOL.sprintf("\x1b[%dA", 2)."\x1b[0J", stream_get_contents($output->getStream()));
+        $this->assertEquals('Foo'.PHP_EOL.'Bar'.PHP_EOL.sprintf("\x1b[%dA", 2)."\x1b[0J", stream_get_contents($output->getStream()));
     }
 
     public function testClearNumberOfLines()
@@ -61,18 +61,18 @@ class ConsoleSectionOutputTest extends TestCase
         $output->overwrite('Bar');
 
         rewind($output->getStream());
-        $this->assertEquals('Foo'.PHP_EOL.$this->generateOutput('Bar').PHP_EOL, stream_get_contents($output->getStream()));
+        $this->assertEquals('Foo'.PHP_EOL."\x1b[1A\x1b[0JBar".PHP_EOL, stream_get_contents($output->getStream()));
     }
 
     public function testOverwriteMultipleLines()
     {
         $output = new ConsoleSectionOutput($this->stream, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
 
-        $output->writeln("Foo\nBar\nBaz");
+        $output->writeln('Foo'.PHP_EOL.'Bar'.PHP_EOL.'Baz');
         $output->overwrite('Bar');
 
         rewind($output->getStream());
-        $this->assertEquals("Foo\nBar\nBaz".PHP_EOL.sprintf("\x1b[%dA", 3)."\x1b[0J".'Bar'.PHP_EOL, stream_get_contents($output->getStream()));
+        $this->assertEquals('Foo'.PHP_EOL.'Bar'.PHP_EOL.'Baz'.PHP_EOL.sprintf("\x1b[%dA", 3)."\x1b[0J".'Bar'.PHP_EOL, stream_get_contents($output->getStream()));
     }
 
     public function testAddingMultipleSections()
@@ -96,13 +96,6 @@ class ConsoleSectionOutputTest extends TestCase
         $output2->overwrite('Foobar');
 
         rewind($output->getStream());
-        $this->assertEquals("Foo\nBar\n\x1b[2A\x1b[0JBar\n\x1b[1A\x1b[0JBaz\nBar\n\x1b[1A\x1b[0JFoobar".PHP_EOL, stream_get_contents($output->getStream()));
-    }
-
-    protected function generateOutput(string $expected = '')
-    {
-        $count = substr_count($expected, "\n") + 1;
-
-        return sprintf("\x1b[%dA", $count)."\x1b[0J".$expected;
+        $this->assertEquals('Foo'.PHP_EOL.'Bar'.PHP_EOL."\x1b[2A\x1b[0JBar".PHP_EOL."\x1b[1A\x1b[0JBaz".PHP_EOL.'Bar'.PHP_EOL."\x1b[1A\x1b[0JFoobar".PHP_EOL, stream_get_contents($output->getStream()));
     }
 }
