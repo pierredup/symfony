@@ -39,7 +39,7 @@ class ConsoleSectionOutputTest extends TestCase
         $output->clear();
 
         rewind($output->getStream());
-        $this->assertEquals("Foo\nBar\n".sprintf("\x1b[%dA", 2)."\x1b[0J", stream_get_contents($output->getStream()));
+        $this->assertEquals("Foo\nBar".PHP_EOL.sprintf("\x1b[%dA", 2)."\x1b[0J", stream_get_contents($output->getStream()));
     }
 
     public function testClearNumberOfLines()
@@ -50,7 +50,7 @@ class ConsoleSectionOutputTest extends TestCase
         $output->clear(2);
 
         rewind($output->getStream());
-        $this->assertEquals("Foo\nBar\nBaz\nFooBar\n".sprintf("\x1b[%dA", 2)."\x1b[0J", stream_get_contents($output->getStream()));
+        $this->assertEquals("Foo\nBar\nBaz\nFooBar".PHP_EOL.sprintf("\x1b[%dA", 2)."\x1b[0J", stream_get_contents($output->getStream()));
     }
 
     public function testOverwrite()
@@ -61,7 +61,7 @@ class ConsoleSectionOutputTest extends TestCase
         $output->overwrite('Bar');
 
         rewind($output->getStream());
-        $this->assertEquals("Foo\n".$this->generateOutput('Bar').PHP_EOL, stream_get_contents($output->getStream()));
+        $this->assertEquals("Foo".PHP_EOL.$this->generateOutput('Bar').PHP_EOL, stream_get_contents($output->getStream()));
     }
 
     public function testOverwriteMultipleLines()
@@ -72,7 +72,7 @@ class ConsoleSectionOutputTest extends TestCase
         $output->overwrite('Bar');
 
         rewind($output->getStream());
-        $this->assertEquals("Foo\nBar\nBaz\n".sprintf("\x1b[%dA", 3)."\x1b[0J".'Bar'.PHP_EOL, stream_get_contents($output->getStream()));
+        $this->assertEquals("Foo\nBar\nBaz".PHP_EOL.sprintf("\x1b[%dA", 3)."\x1b[0J".'Bar'.PHP_EOL, stream_get_contents($output->getStream()));
     }
 
     public function testAddingMultipleSections()
