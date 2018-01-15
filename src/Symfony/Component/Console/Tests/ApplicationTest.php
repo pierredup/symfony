@@ -41,6 +41,13 @@ class ApplicationTest extends TestCase
 {
     protected static $fixturesPath;
 
+    private $exceptionLine;
+
+    public function setUp()
+    {
+        $this->exceptionLine = null;
+    }
+
     public static function setUpBeforeClass()
     {
         self::$fixturesPath = realpath(__DIR__.'/Fixtures/');
@@ -723,6 +730,7 @@ class ApplicationTest extends TestCase
         $application->setAutoExit(false);
         putenv('COLUMNS=120');
         $application->register('foo')->setCode(function () {
+            $this->exceptionLine = __LINE__ + 1;
             throw new \Exception('エラーメッセージ');
         });
         $tester = new ApplicationTester($application);
@@ -737,6 +745,7 @@ class ApplicationTest extends TestCase
         $application->setAutoExit(false);
         putenv('COLUMNS=32');
         $application->register('foo')->setCode(function () {
+            $this->exceptionLine = __LINE__ + 1;
             throw new \Exception('コマンドの実行中にエラーが発生しました。');
         });
         $tester = new ApplicationTester($application);
@@ -751,6 +760,7 @@ class ApplicationTest extends TestCase
         $application->setAutoExit(false);
         putenv('COLUMNS=22');
         $application->register('foo')->setCode(function () {
+            $this->exceptionLine = __LINE__ + 1;
             throw new \Exception('dont break here <info>!</info>');
         });
         $tester = new ApplicationTester($application);
@@ -768,6 +778,7 @@ class ApplicationTest extends TestCase
             ->method('getTerminalWidth')
             ->will($this->returnValue(120));
         $application->register('foo')->setCode(function () {
+            $this->exceptionLine = __LINE__ + 1;
             throw new \InvalidArgumentException("\n\nline 1 with extra spaces        \nline 2\n\nline 4\n");
         });
         $tester = new ApplicationTester($application);
@@ -1613,6 +1624,11 @@ class ApplicationTest extends TestCase
         } catch (\Error $e) {
             $this->assertSame($e->getMessage(), 'Class \'UnknownClass\' not found');
         }
+    }
+
+    private function replaceExceptionLine(string $file)
+    {
+        return str_replace('{line}', $this->exceptionLine, file_get_contents($file));
     }
 
     protected function tearDown()
