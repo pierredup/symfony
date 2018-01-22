@@ -71,6 +71,8 @@ class Table
 
     private static $styles;
 
+    private $rendered = false;
+
     public function __construct(OutputInterface $output)
     {
         $this->output = $output;
@@ -259,7 +261,9 @@ class Table
             throw new \RuntimeException(sprintf('Output should be an instance of %s when calling %s', ConsoleSectionOutput::class, __METHOD__));
         }
 
-        $this->output->clear($this->calculateRowCount());
+        if ($this->rendered) {
+            $this->output->clear($this->calculateRowCount());
+        }
 
         $this->addRow($row);
 
@@ -316,6 +320,8 @@ class Table
         }
 
         $this->cleanup();
+
+        $this->rendered = true;
     }
 
     /**
