@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Console\Helper;
 
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 
@@ -252,6 +253,21 @@ class Table
         return $this;
     }
 
+    public function appendRow($row)
+    {
+        if (!$this->output instanceof ConsoleSectionOutput) {
+            throw new \RuntimeException(sprintf('Output should be an instance of %s when calling %s', ConsoleSectionOutput::class, __METHOD__));
+        }
+
+        $this->output->clear($this->calculateRowCount());
+
+        $this->addRow($row);
+
+        $this->render();
+
+        return $this;
+    }
+
     public function setRow($column, array $row)
     {
         $this->rows[$column] = $row;
@@ -445,11 +461,11 @@ class Table
         $numberOfRows = count($this->rows);
 
         if (!empty($this->headers)) {
-            ++$numberOfRows; // Add row for header separator
+            $numberOfRows += 2; // Add row for header separators
             $numberOfRows += count($this->headers);
         }
 
-        ++$numberOfRows; // Add row for separator
+        ++$numberOfRows; // Add row for footer separator
 
         return $numberOfRows;
     }
