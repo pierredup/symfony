@@ -25,20 +25,22 @@ class ConsoleSectionOutput extends StreamOutput
 
     private $lines = 0;
 
-    private static $sections = array();
+    private $sections;
 
     private $terminal;
 
     /**
      * @param resource                 $stream
+     * @param ConsoleSectionOutput[]   $sections
      * @param int                      $verbosity
      * @param bool                     $decorated
      * @param OutputFormatterInterface $formatter
      */
-    public function __construct($stream, int $verbosity, bool $decorated, OutputFormatterInterface $formatter)
+    public function __construct($stream, array &$sections, int $verbosity, bool $decorated, OutputFormatterInterface $formatter)
     {
         parent::__construct($stream, $verbosity, $decorated, $formatter);
-        array_unshift(self::$sections, $this);
+        array_unshift($sections, $this);
+        $this->sections = &$sections;
         $this->terminal = new Terminal();
     }
 
@@ -108,7 +110,7 @@ class ConsoleSectionOutput extends StreamOutput
         $numberOfLinesToClear = $numberOfLinesToClearFromCurrentSection;
         $erasedContent = array();
 
-        foreach (self::$sections as $section) {
+        foreach ($this->sections as $section) {
             if ($section === $this) {
                 break;
             }

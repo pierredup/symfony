@@ -33,7 +33,8 @@ class ConsoleSectionOutputTest extends TestCase
 
     public function testClearAll()
     {
-        $output = new ConsoleSectionOutput($this->stream, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $sections = array();
+        $output = new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
 
         $output->writeln('Foo'.PHP_EOL.'Bar');
         $output->clear();
@@ -44,7 +45,8 @@ class ConsoleSectionOutputTest extends TestCase
 
     public function testClearNumberOfLines()
     {
-        $output = new ConsoleSectionOutput($this->stream, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $sections = array();
+        $output = new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
 
         $output->writeln("Foo\nBar\nBaz\nFooBar");
         $output->clear(2);
@@ -55,7 +57,8 @@ class ConsoleSectionOutputTest extends TestCase
 
     public function testOverwrite()
     {
-        $output = new ConsoleSectionOutput($this->stream, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $sections = array();
+        $output = new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
 
         $output->writeln('Foo');
         $output->overwrite('Bar');
@@ -66,7 +69,8 @@ class ConsoleSectionOutputTest extends TestCase
 
     public function testOverwriteMultipleLines()
     {
-        $output = new ConsoleSectionOutput($this->stream, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $sections = array();
+        $output = new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
 
         $output->writeln('Foo'.PHP_EOL.'Bar'.PHP_EOL.'Baz');
         $output->overwrite('Bar');
@@ -77,17 +81,19 @@ class ConsoleSectionOutputTest extends TestCase
 
     public function testAddingMultipleSections()
     {
-        $output1 = new ConsoleSectionOutput($this->stream, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
-        $output2 = new ConsoleSectionOutput($this->stream, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $sections = array();
+        $output1 = new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $output2 = new ConsoleSectionOutput($this->stream, $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
 
-        $this->assertTrue(self::readAttribute($output1, 'sections') > 1);
+        $this->assertCount(2, $sections);
     }
 
     public function testMultipleSectionsOutput()
     {
         $output = new StreamOutput($this->stream);
-        $output1 = new ConsoleSectionOutput($output->getStream(), OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
-        $output2 = new ConsoleSectionOutput($output->getStream(), OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $sections = array();
+        $output1 = new ConsoleSectionOutput($output->getStream(), $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $output2 = new ConsoleSectionOutput($output->getStream(), $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
 
         $output1->writeln('Foo');
         $output2->writeln('Bar');

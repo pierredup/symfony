@@ -809,8 +809,9 @@ TABLE;
 
     public function testSectionOutput()
     {
+        $sections = array();
         $stream = $this->getOutputStream(true);
-        $output = new ConsoleSectionOutput($stream->getStream(), $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
+        $output = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
         $table = new Table($output);
         $table
             ->setHeaders(array('ISBN', 'Title', 'Author', 'Price'))
@@ -845,8 +846,9 @@ TABLE;
 
     public function testSectionOutputWithoutDecoration()
     {
+        $sections = array();
         $stream = $this->getOutputStream();
-        $output = new ConsoleSectionOutput($stream->getStream(), $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
+        $output = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
         $table = new Table($output);
         $table
             ->setHeaders(array('ISBN', 'Title', 'Author', 'Price'))
