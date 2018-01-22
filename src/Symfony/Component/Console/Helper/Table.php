@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Console\Helper;
 
-use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 
@@ -276,10 +275,6 @@ class Table
      */
     public function render()
     {
-        if ($this->output instanceof ConsoleSectionOutput) {
-            $this->output->clear($this->calculateRowCount());
-        }
-
         $this->calculateNumberOfColumns();
         $rows = $this->buildTableRows($this->rows);
         $headers = $this->buildTableRows($this->headers);
