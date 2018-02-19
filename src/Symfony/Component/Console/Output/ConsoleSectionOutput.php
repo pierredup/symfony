@@ -55,11 +55,14 @@ class ConsoleSectionOutput extends StreamOutput
             return;
         }
 
-        if (!$lines) {
+        if ($lines) {
+            $newContent = implode(PHP_EOL, \array_slice(explode(PHP_EOL, $this->content), 0, -$lines - 1));
+            $this->content = $newContent || substr($this->content, 0, 1) === PHP_EOL ? $newContent . PHP_EOL : '';
+        } else {
             $lines = $this->lines;
+            $this->content = '';
         }
 
-        $this->content = '';
         $this->lines -= $lines;
 
         parent::doWrite($this->popStreamContentUntilCurrentSection($lines), false);

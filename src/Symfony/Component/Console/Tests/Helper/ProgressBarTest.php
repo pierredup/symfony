@@ -334,6 +334,35 @@ class ProgressBarTest extends TestCase
         );
     }
 
+    public function testOverwriteMultipleProgressBarsWithSectionOutputs()
+    {
+        $sections = array();
+        $stream = $this->getOutputStream(true);
+        $output1 = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
+        $output2 = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
+
+        $progress = new ProgressBar($output1, 50);
+        $progress2 = new ProgressBar($output2, 50);
+
+        $progress->start();
+        $progress2->start();
+
+        $progress2->advance();
+        $progress->advance();
+
+        rewind($stream->getStream());
+
+        $this->assertEquals(
+            '  0/50 [>---------------------------]   0%'.PHP_EOL.
+            '  0/50 [>---------------------------]   0%'.PHP_EOL.
+            "\x1b[1A\x1b[0J".'  1/50 [>---------------------------]   2%'.PHP_EOL.
+            "\x1b[2A\x1b[0J".'  1/50 [>---------------------------]   2%'.PHP_EOL.
+            "\x1b[1A\x1b[0J".'  1/50 [>---------------------------]   2%'.PHP_EOL.
+            '  1/50 [>---------------------------]   2%'.PHP_EOL,
+            stream_get_contents($stream->getStream())
+        );
+    }
+
     public function testStartWithMax()
     {
         $bar = new ProgressBar($output = $this->getOutputStream());
