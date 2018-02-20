@@ -13,6 +13,7 @@ namespace Symfony\Component\Console\Tests\Output;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
@@ -53,6 +54,44 @@ class ConsoleSectionOutputTest extends TestCase
 
         rewind($output->getStream());
         $this->assertEquals("Foo\nBar\nBaz\nFooBar".PHP_EOL.sprintf("\x1b[%dA", 2)."\x1b[0J", stream_get_contents($output->getStream()));
+    }
+
+    public function testClearNumberOfLinesWithMultipleSections()
+    {
+        $output = new StreamOutput($this->stream);
+        $sections = array();
+        $output1 = new ConsoleSectionOutput($output->getStream(), $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $output2 = new ConsoleSectionOutput($output->getStream(), $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+
+        $output2->writeln('Foo');
+        $output2->writeln('Bar');
+        $output2->clear(1);
+        $output1->writeln('Baz');
+
+        rewind($output->getStream());
+
+        $this->assertEquals('Foo'.PHP_EOL.'Bar'.PHP_EOL."\x1b[1A\x1b[0J\e[1A\e[0J".'Baz'.PHP_EOL.'Foo'.PHP_EOL, stream_get_contents($output->getStream()));
+    }
+
+    public function testClearPreservingEmptyLines()
+    {
+        $output = new StreamOutput($this->stream);
+        $sections = array();
+        $output1 = new ConsoleSectionOutput($output->getStream(), $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+        $output2 = new ConsoleSectionOutput($output->getStream(), $sections, OutputInterface::VERBOSITY_NORMAL, true, new OutputFormatter());
+
+        $output2->writeln(PHP_EOL.'foo');
+        $output2->clear(1);
+        $output1->writeln('bar');
+
+        rewind($output->getStream());
+
+        $this->assertEquals(PHP_EOL.'foo'.PHP_EOL."\x1b[1A\x1b[0J\x1b[1A\x1b[0J".'bar'.PHP_EOL.PHP_EOL, stream_get_contents($output->getStream()));
+    }
+
+    public function clearFirstInputProvider()
+    {
+        return array(array(PHP_EOL.'Foo'), array('Foo'));
     }
 
     public function testOverwrite()
