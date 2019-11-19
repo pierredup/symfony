@@ -210,6 +210,14 @@ class Workflow implements WorkflowInterface
             $this->announce($subject, $transition, $marking);
         }
 
+        if (!$transitionBlockerList) {
+            throw new UndefinedTransitionException($subject, $transitionName, $this);
+        }
+
+        if (!$applied) {
+            throw new NotEnabledTransitionException($subject, $transitionName, $this, $transitionBlockerList);
+        }
+
         return $marking;
     }
 
