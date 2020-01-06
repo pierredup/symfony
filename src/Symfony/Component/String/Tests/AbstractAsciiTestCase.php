@@ -99,6 +99,17 @@ abstract class AbstractAsciiTestCase extends TestCase
         ];
     }
 
+    public function testUnwrap()
+    {
+        $expected = ['hello', 'world'];
+
+        $s = static::createFromString('');
+
+        $actual = $s::unwrap([static::createFromString('hello'), static::createFromString('world')]);
+
+        $this->assertEquals($expected, $actual);
+    }
+
     /**
      * @dataProvider provideWrap
      */
