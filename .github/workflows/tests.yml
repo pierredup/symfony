@@ -40,6 +40,10 @@ jobs:
                 image: rabbitmq:3.8.3
                 ports:
                     - 5672:5672
+            mongo:
+                image: mongo:3.6-xenial
+                ports:
+                    - 27017:27017
 
         steps:
             -   name: Checkout
@@ -49,7 +53,7 @@ jobs:
                 uses: shivammathur/setup-php@v2
                 with:
                     coverage: "none"
-                    extensions: "memcached,redis,xsl"
+                    extensions: "memcached,mongodb-1.6.1,redis,xsl"
                     ini-values: "memory_limit=-1"
                     php-version: "${{ matrix.php }}"
                     tools: flex
@@ -87,6 +91,7 @@ jobs:
                     SYMFONY_DEPRECATIONS_HELPER: 'max[indirect]=7'
                     REDIS_HOST: localhost
                     REDIS_CLUSTER_HOSTS: 'localhost:7000 localhost:7001 localhost:7002 localhost:7003 localhost:7004 localhost:7005'
+                    MONGODB_HOST: 'localhost:27017'
                     MESSENGER_REDIS_DSN: redis://127.0.0.1:7006/messages
                     MESSENGER_AMQP_DSN: amqp://localhost/%2f/messages
                     MEMCACHED_HOST: localhost
